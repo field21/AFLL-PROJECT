@@ -1,0 +1,207 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    SYMBOL
+
+Grammar
+
+Rule 0     S' -> declaration
+Rule 1     declaration -> TYPE IDENTIFIER LBRACE para RBRACE LPARA inside RPARA
+Rule 2     inside -> TYPE IDENTIFIER ASSIGN IDENTIFIER SEMICOLON
+Rule 3     inside -> RET IDENTIFIER SEMICOLON
+Rule 4     para -> TYPE IDENTIFIER
+Rule 5     para -> TYPE IDENTIFIER COMMA para
+Rule 6     empty -> <empty>
+
+Terminals, with rules where they appear
+
+ASSIGN               : 2
+COMMA                : 5
+IDENTIFIER           : 1 2 2 3 4 5
+LBRACE               : 1
+LPARA                : 1
+RBRACE               : 1
+RET                  : 3
+RPARA                : 1
+SEMICOLON            : 2 3
+SYMBOL               : 
+TYPE                 : 1 2 4 5
+error                : 
+
+Nonterminals, with rules where they appear
+
+declaration          : 0
+empty                : 
+inside               : 1
+para                 : 1 5
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . declaration
+    (1) declaration -> . TYPE IDENTIFIER LBRACE para RBRACE LPARA inside RPARA
+
+    TYPE            shift and go to state 2
+
+    declaration                    shift and go to state 1
+
+state 1
+
+    (0) S' -> declaration .
+
+
+
+state 2
+
+    (1) declaration -> TYPE . IDENTIFIER LBRACE para RBRACE LPARA inside RPARA
+
+    IDENTIFIER      shift and go to state 3
+
+
+state 3
+
+    (1) declaration -> TYPE IDENTIFIER . LBRACE para RBRACE LPARA inside RPARA
+
+    LBRACE          shift and go to state 4
+
+
+state 4
+
+    (1) declaration -> TYPE IDENTIFIER LBRACE . para RBRACE LPARA inside RPARA
+    (4) para -> . TYPE IDENTIFIER
+    (5) para -> . TYPE IDENTIFIER COMMA para
+
+    TYPE            shift and go to state 5
+
+    para                           shift and go to state 6
+
+state 5
+
+    (4) para -> TYPE . IDENTIFIER
+    (5) para -> TYPE . IDENTIFIER COMMA para
+
+    IDENTIFIER      shift and go to state 7
+
+
+state 6
+
+    (1) declaration -> TYPE IDENTIFIER LBRACE para . RBRACE LPARA inside RPARA
+
+    RBRACE          shift and go to state 8
+
+
+state 7
+
+    (4) para -> TYPE IDENTIFIER .
+    (5) para -> TYPE IDENTIFIER . COMMA para
+
+    RBRACE          reduce using rule 4 (para -> TYPE IDENTIFIER .)
+    COMMA           shift and go to state 9
+
+
+state 8
+
+    (1) declaration -> TYPE IDENTIFIER LBRACE para RBRACE . LPARA inside RPARA
+
+    LPARA           shift and go to state 10
+
+
+state 9
+
+    (5) para -> TYPE IDENTIFIER COMMA . para
+    (4) para -> . TYPE IDENTIFIER
+    (5) para -> . TYPE IDENTIFIER COMMA para
+
+    TYPE            shift and go to state 5
+
+    para                           shift and go to state 11
+
+state 10
+
+    (1) declaration -> TYPE IDENTIFIER LBRACE para RBRACE LPARA . inside RPARA
+    (2) inside -> . TYPE IDENTIFIER ASSIGN IDENTIFIER SEMICOLON
+    (3) inside -> . RET IDENTIFIER SEMICOLON
+
+    TYPE            shift and go to state 12
+    RET             shift and go to state 14
+
+    inside                         shift and go to state 13
+
+state 11
+
+    (5) para -> TYPE IDENTIFIER COMMA para .
+
+    RBRACE          reduce using rule 5 (para -> TYPE IDENTIFIER COMMA para .)
+
+
+state 12
+
+    (2) inside -> TYPE . IDENTIFIER ASSIGN IDENTIFIER SEMICOLON
+
+    IDENTIFIER      shift and go to state 15
+
+
+state 13
+
+    (1) declaration -> TYPE IDENTIFIER LBRACE para RBRACE LPARA inside . RPARA
+
+    RPARA           shift and go to state 16
+
+
+state 14
+
+    (3) inside -> RET . IDENTIFIER SEMICOLON
+
+    IDENTIFIER      shift and go to state 17
+
+
+state 15
+
+    (2) inside -> TYPE IDENTIFIER . ASSIGN IDENTIFIER SEMICOLON
+
+    ASSIGN          shift and go to state 18
+
+
+state 16
+
+    (1) declaration -> TYPE IDENTIFIER LBRACE para RBRACE LPARA inside RPARA .
+
+    $end            reduce using rule 1 (declaration -> TYPE IDENTIFIER LBRACE para RBRACE LPARA inside RPARA .)
+
+
+state 17
+
+    (3) inside -> RET IDENTIFIER . SEMICOLON
+
+    SEMICOLON       shift and go to state 19
+
+
+state 18
+
+    (2) inside -> TYPE IDENTIFIER ASSIGN . IDENTIFIER SEMICOLON
+
+    IDENTIFIER      shift and go to state 20
+
+
+state 19
+
+    (3) inside -> RET IDENTIFIER SEMICOLON .
+
+    RPARA           reduce using rule 3 (inside -> RET IDENTIFIER SEMICOLON .)
+
+
+state 20
+
+    (2) inside -> TYPE IDENTIFIER ASSIGN IDENTIFIER . SEMICOLON
+
+    SEMICOLON       shift and go to state 21
+
+
+state 21
+
+    (2) inside -> TYPE IDENTIFIER ASSIGN IDENTIFIER SEMICOLON .
+
+    RPARA           reduce using rule 2 (inside -> TYPE IDENTIFIER ASSIGN IDENTIFIER SEMICOLON .)
+
