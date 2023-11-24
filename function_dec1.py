@@ -10,6 +10,7 @@ tokens = (
     'SEMICOLON',
     'LBRACE',
     'RBRACE',
+    'COMMA',
 )
 
 
@@ -41,9 +42,13 @@ def t_error(t):
 
 # Parsing rules
 def p_declaration(p):
-    '''declaration : TYPE IDENTIFIER LBRACE RBRACE SEMICOLON'''
+    '''declaration : TYPE IDENTIFIER LBRACE type RBRACE SEMICOLON'''
     p[0] = f"valid declaration of the function: {p[1]}{p[2]} {p[3]};"
 
+
+def p_type(p):
+    '''type: TYPE IDENTIFIER
+            | TYPE IDENTIFIER COMMA'''
 
 
 

@@ -2,48 +2,68 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    SYMBOL
+    GREATER
+    LESSER
 
 Grammar
 
 Rule 0     S' -> declaration
-Rule 1     declaration -> TYPE IDENTIFIER LBRACE para RBRACE LPARA inside RPARA
-Rule 2     inside -> TYPE IDENTIFIER ASSIGN IDENTIFIER SEMICOLON
-Rule 3     inside -> RET IDENTIFIER SEMICOLON
-Rule 4     para -> TYPE IDENTIFIER
-Rule 5     para -> TYPE IDENTIFIER COMMA para
-Rule 6     empty -> <empty>
+Rule 1     declaration -> SWITCH LPARA IDENTIFIER RPARA LBRACE cases RBRACE
+Rule 2     cases -> case_break
+Rule 3     cases -> case_break cases
+Rule 4     case_break -> CASE NUMERIC COLON stae BREAK SEMICOLON
+Rule 5     case_break -> DEFAULT COLON stae BREAK SEMICOLON
+Rule 6     stae -> IDENTIFIER EQUAL NUMERIC SEMICOLON
+Rule 7     stae -> IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON
+Rule 8     stae -> IDENTIFIER PLUS PLUS SEMICOLON
+Rule 9     stae -> IDENTIFIER MINUS MINUS SEMICOLON
+Rule 10    stae -> stae stae stae
+Rule 11    stae -> print_statement
+Rule 12    print_statement -> PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON
+Rule 13    print_statement -> PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON
+Rule 14    empty -> <empty>
 
 Terminals, with rules where they appear
 
-ASSIGN               : 2
-COMMA                : 5
-IDENTIFIER           : 1 2 2 3 4 5
+BREAK                : 4 5
+CASE                 : 4
+COLON                : 4 5
+DEFAULT              : 5
+EQUAL                : 6 7
+GREATER              : 
+IDENTIFIER           : 1 6 7 7 8 9 13
 LBRACE               : 1
-LPARA                : 1
+LESSER               : 
+LPARA                : 1 12 13
+MINUS                : 9 9
+NUMERIC              : 4 6
+PLUS                 : 7 7 8 8
+PRINT                : 12 13
+QUOTE                : 12 12 13 13
 RBRACE               : 1
-RET                  : 3
-RPARA                : 1
-SEMICOLON            : 2 3
-SYMBOL               : 
-TYPE                 : 1 2 4 5
+RPARA                : 1 12 13
+SEMICOLON            : 4 5 6 7 8 9 12 13
+STRING               : 12
+SWITCH               : 1
 error                : 
 
 Nonterminals, with rules where they appear
 
+case_break           : 2 3
+cases                : 1 3
 declaration          : 0
 empty                : 
-inside               : 1
-para                 : 1 5
+print_statement      : 11
+stae                 : 4 5 10 10 10
 
 Parsing method: LALR
 
 state 0
 
     (0) S' -> . declaration
-    (1) declaration -> . TYPE IDENTIFIER LBRACE para RBRACE LPARA inside RPARA
+    (1) declaration -> . SWITCH LPARA IDENTIFIER RPARA LBRACE cases RBRACE
 
-    TYPE            shift and go to state 2
+    SWITCH          shift and go to state 2
 
     declaration                    shift and go to state 1
 
@@ -55,153 +75,465 @@ state 1
 
 state 2
 
-    (1) declaration -> TYPE . IDENTIFIER LBRACE para RBRACE LPARA inside RPARA
+    (1) declaration -> SWITCH . LPARA IDENTIFIER RPARA LBRACE cases RBRACE
 
-    IDENTIFIER      shift and go to state 3
+    LPARA           shift and go to state 3
 
 
 state 3
 
-    (1) declaration -> TYPE IDENTIFIER . LBRACE para RBRACE LPARA inside RPARA
+    (1) declaration -> SWITCH LPARA . IDENTIFIER RPARA LBRACE cases RBRACE
 
-    LBRACE          shift and go to state 4
+    IDENTIFIER      shift and go to state 4
 
 
 state 4
 
-    (1) declaration -> TYPE IDENTIFIER LBRACE . para RBRACE LPARA inside RPARA
-    (4) para -> . TYPE IDENTIFIER
-    (5) para -> . TYPE IDENTIFIER COMMA para
+    (1) declaration -> SWITCH LPARA IDENTIFIER . RPARA LBRACE cases RBRACE
 
-    TYPE            shift and go to state 5
+    RPARA           shift and go to state 5
 
-    para                           shift and go to state 6
 
 state 5
 
-    (4) para -> TYPE . IDENTIFIER
-    (5) para -> TYPE . IDENTIFIER COMMA para
+    (1) declaration -> SWITCH LPARA IDENTIFIER RPARA . LBRACE cases RBRACE
 
-    IDENTIFIER      shift and go to state 7
+    LBRACE          shift and go to state 6
 
 
 state 6
 
-    (1) declaration -> TYPE IDENTIFIER LBRACE para . RBRACE LPARA inside RPARA
+    (1) declaration -> SWITCH LPARA IDENTIFIER RPARA LBRACE . cases RBRACE
+    (2) cases -> . case_break
+    (3) cases -> . case_break cases
+    (4) case_break -> . CASE NUMERIC COLON stae BREAK SEMICOLON
+    (5) case_break -> . DEFAULT COLON stae BREAK SEMICOLON
 
-    RBRACE          shift and go to state 8
+    CASE            shift and go to state 9
+    DEFAULT         shift and go to state 10
 
+    cases                          shift and go to state 7
+    case_break                     shift and go to state 8
 
 state 7
 
-    (4) para -> TYPE IDENTIFIER .
-    (5) para -> TYPE IDENTIFIER . COMMA para
+    (1) declaration -> SWITCH LPARA IDENTIFIER RPARA LBRACE cases . RBRACE
 
-    RBRACE          reduce using rule 4 (para -> TYPE IDENTIFIER .)
-    COMMA           shift and go to state 9
+    RBRACE          shift and go to state 11
 
 
 state 8
 
-    (1) declaration -> TYPE IDENTIFIER LBRACE para RBRACE . LPARA inside RPARA
+    (2) cases -> case_break .
+    (3) cases -> case_break . cases
+    (2) cases -> . case_break
+    (3) cases -> . case_break cases
+    (4) case_break -> . CASE NUMERIC COLON stae BREAK SEMICOLON
+    (5) case_break -> . DEFAULT COLON stae BREAK SEMICOLON
 
-    LPARA           shift and go to state 10
+    RBRACE          reduce using rule 2 (cases -> case_break .)
+    CASE            shift and go to state 9
+    DEFAULT         shift and go to state 10
 
+    case_break                     shift and go to state 8
+    cases                          shift and go to state 12
 
 state 9
 
-    (5) para -> TYPE IDENTIFIER COMMA . para
-    (4) para -> . TYPE IDENTIFIER
-    (5) para -> . TYPE IDENTIFIER COMMA para
+    (4) case_break -> CASE . NUMERIC COLON stae BREAK SEMICOLON
 
-    TYPE            shift and go to state 5
+    NUMERIC         shift and go to state 13
 
-    para                           shift and go to state 11
 
 state 10
 
-    (1) declaration -> TYPE IDENTIFIER LBRACE para RBRACE LPARA . inside RPARA
-    (2) inside -> . TYPE IDENTIFIER ASSIGN IDENTIFIER SEMICOLON
-    (3) inside -> . RET IDENTIFIER SEMICOLON
+    (5) case_break -> DEFAULT . COLON stae BREAK SEMICOLON
 
-    TYPE            shift and go to state 12
-    RET             shift and go to state 14
+    COLON           shift and go to state 14
 
-    inside                         shift and go to state 13
 
 state 11
 
-    (5) para -> TYPE IDENTIFIER COMMA para .
+    (1) declaration -> SWITCH LPARA IDENTIFIER RPARA LBRACE cases RBRACE .
 
-    RBRACE          reduce using rule 5 (para -> TYPE IDENTIFIER COMMA para .)
+    $end            reduce using rule 1 (declaration -> SWITCH LPARA IDENTIFIER RPARA LBRACE cases RBRACE .)
 
 
 state 12
 
-    (2) inside -> TYPE . IDENTIFIER ASSIGN IDENTIFIER SEMICOLON
+    (3) cases -> case_break cases .
 
-    IDENTIFIER      shift and go to state 15
+    RBRACE          reduce using rule 3 (cases -> case_break cases .)
 
 
 state 13
 
-    (1) declaration -> TYPE IDENTIFIER LBRACE para RBRACE LPARA inside . RPARA
+    (4) case_break -> CASE NUMERIC . COLON stae BREAK SEMICOLON
 
-    RPARA           shift and go to state 16
+    COLON           shift and go to state 15
 
 
 state 14
 
-    (3) inside -> RET . IDENTIFIER SEMICOLON
+    (5) case_break -> DEFAULT COLON . stae BREAK SEMICOLON
+    (6) stae -> . IDENTIFIER EQUAL NUMERIC SEMICOLON
+    (7) stae -> . IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON
+    (8) stae -> . IDENTIFIER PLUS PLUS SEMICOLON
+    (9) stae -> . IDENTIFIER MINUS MINUS SEMICOLON
+    (10) stae -> . stae stae stae
+    (11) stae -> . print_statement
+    (12) print_statement -> . PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON
+    (13) print_statement -> . PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON
 
     IDENTIFIER      shift and go to state 17
+    PRINT           shift and go to state 19
 
+    stae                           shift and go to state 16
+    print_statement                shift and go to state 18
 
 state 15
 
-    (2) inside -> TYPE IDENTIFIER . ASSIGN IDENTIFIER SEMICOLON
+    (4) case_break -> CASE NUMERIC COLON . stae BREAK SEMICOLON
+    (6) stae -> . IDENTIFIER EQUAL NUMERIC SEMICOLON
+    (7) stae -> . IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON
+    (8) stae -> . IDENTIFIER PLUS PLUS SEMICOLON
+    (9) stae -> . IDENTIFIER MINUS MINUS SEMICOLON
+    (10) stae -> . stae stae stae
+    (11) stae -> . print_statement
+    (12) print_statement -> . PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON
+    (13) print_statement -> . PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON
 
-    ASSIGN          shift and go to state 18
+    IDENTIFIER      shift and go to state 17
+    PRINT           shift and go to state 19
 
+    stae                           shift and go to state 20
+    print_statement                shift and go to state 18
 
 state 16
 
-    (1) declaration -> TYPE IDENTIFIER LBRACE para RBRACE LPARA inside RPARA .
+    (5) case_break -> DEFAULT COLON stae . BREAK SEMICOLON
+    (10) stae -> stae . stae stae
+    (6) stae -> . IDENTIFIER EQUAL NUMERIC SEMICOLON
+    (7) stae -> . IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON
+    (8) stae -> . IDENTIFIER PLUS PLUS SEMICOLON
+    (9) stae -> . IDENTIFIER MINUS MINUS SEMICOLON
+    (10) stae -> . stae stae stae
+    (11) stae -> . print_statement
+    (12) print_statement -> . PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON
+    (13) print_statement -> . PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON
 
-    $end            reduce using rule 1 (declaration -> TYPE IDENTIFIER LBRACE para RBRACE LPARA inside RPARA .)
+    BREAK           shift and go to state 22
+    IDENTIFIER      shift and go to state 17
+    PRINT           shift and go to state 19
 
+    stae                           shift and go to state 21
+    print_statement                shift and go to state 18
 
 state 17
 
-    (3) inside -> RET IDENTIFIER . SEMICOLON
+    (6) stae -> IDENTIFIER . EQUAL NUMERIC SEMICOLON
+    (7) stae -> IDENTIFIER . EQUAL IDENTIFIER PLUS PLUS SEMICOLON
+    (8) stae -> IDENTIFIER . PLUS PLUS SEMICOLON
+    (9) stae -> IDENTIFIER . MINUS MINUS SEMICOLON
 
-    SEMICOLON       shift and go to state 19
+    EQUAL           shift and go to state 23
+    PLUS            shift and go to state 24
+    MINUS           shift and go to state 25
 
 
 state 18
 
-    (2) inside -> TYPE IDENTIFIER ASSIGN . IDENTIFIER SEMICOLON
+    (11) stae -> print_statement .
 
-    IDENTIFIER      shift and go to state 20
+    BREAK           reduce using rule 11 (stae -> print_statement .)
+    IDENTIFIER      reduce using rule 11 (stae -> print_statement .)
+    PRINT           reduce using rule 11 (stae -> print_statement .)
 
 
 state 19
 
-    (3) inside -> RET IDENTIFIER SEMICOLON .
+    (12) print_statement -> PRINT . LPARA QUOTE STRING QUOTE RPARA SEMICOLON
+    (13) print_statement -> PRINT . LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON
 
-    RPARA           reduce using rule 3 (inside -> RET IDENTIFIER SEMICOLON .)
+    LPARA           shift and go to state 26
 
 
 state 20
 
-    (2) inside -> TYPE IDENTIFIER ASSIGN IDENTIFIER . SEMICOLON
+    (4) case_break -> CASE NUMERIC COLON stae . BREAK SEMICOLON
+    (10) stae -> stae . stae stae
+    (6) stae -> . IDENTIFIER EQUAL NUMERIC SEMICOLON
+    (7) stae -> . IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON
+    (8) stae -> . IDENTIFIER PLUS PLUS SEMICOLON
+    (9) stae -> . IDENTIFIER MINUS MINUS SEMICOLON
+    (10) stae -> . stae stae stae
+    (11) stae -> . print_statement
+    (12) print_statement -> . PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON
+    (13) print_statement -> . PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON
 
-    SEMICOLON       shift and go to state 21
+    BREAK           shift and go to state 27
+    IDENTIFIER      shift and go to state 17
+    PRINT           shift and go to state 19
 
+    stae                           shift and go to state 21
+    print_statement                shift and go to state 18
 
 state 21
 
-    (2) inside -> TYPE IDENTIFIER ASSIGN IDENTIFIER SEMICOLON .
+    (10) stae -> stae stae . stae
+    (10) stae -> stae . stae stae
+    (6) stae -> . IDENTIFIER EQUAL NUMERIC SEMICOLON
+    (7) stae -> . IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON
+    (8) stae -> . IDENTIFIER PLUS PLUS SEMICOLON
+    (9) stae -> . IDENTIFIER MINUS MINUS SEMICOLON
+    (10) stae -> . stae stae stae
+    (11) stae -> . print_statement
+    (12) print_statement -> . PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON
+    (13) print_statement -> . PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON
 
-    RPARA           reduce using rule 2 (inside -> TYPE IDENTIFIER ASSIGN IDENTIFIER SEMICOLON .)
+    IDENTIFIER      shift and go to state 17
+    PRINT           shift and go to state 19
 
+    stae                           shift and go to state 28
+    print_statement                shift and go to state 18
+
+state 22
+
+    (5) case_break -> DEFAULT COLON stae BREAK . SEMICOLON
+
+    SEMICOLON       shift and go to state 29
+
+
+state 23
+
+    (6) stae -> IDENTIFIER EQUAL . NUMERIC SEMICOLON
+    (7) stae -> IDENTIFIER EQUAL . IDENTIFIER PLUS PLUS SEMICOLON
+
+    NUMERIC         shift and go to state 31
+    IDENTIFIER      shift and go to state 30
+
+
+state 24
+
+    (8) stae -> IDENTIFIER PLUS . PLUS SEMICOLON
+
+    PLUS            shift and go to state 32
+
+
+state 25
+
+    (9) stae -> IDENTIFIER MINUS . MINUS SEMICOLON
+
+    MINUS           shift and go to state 33
+
+
+state 26
+
+    (12) print_statement -> PRINT LPARA . QUOTE STRING QUOTE RPARA SEMICOLON
+    (13) print_statement -> PRINT LPARA . QUOTE IDENTIFIER QUOTE RPARA SEMICOLON
+
+    QUOTE           shift and go to state 34
+
+
+state 27
+
+    (4) case_break -> CASE NUMERIC COLON stae BREAK . SEMICOLON
+
+    SEMICOLON       shift and go to state 35
+
+
+state 28
+
+    (10) stae -> stae stae stae .
+    (10) stae -> stae stae . stae
+    (10) stae -> stae . stae stae
+    (6) stae -> . IDENTIFIER EQUAL NUMERIC SEMICOLON
+    (7) stae -> . IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON
+    (8) stae -> . IDENTIFIER PLUS PLUS SEMICOLON
+    (9) stae -> . IDENTIFIER MINUS MINUS SEMICOLON
+    (10) stae -> . stae stae stae
+    (11) stae -> . print_statement
+    (12) print_statement -> . PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON
+    (13) print_statement -> . PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON
+
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+  ! shift/reduce conflict for PRINT resolved as shift
+    BREAK           reduce using rule 10 (stae -> stae stae stae .)
+    IDENTIFIER      shift and go to state 17
+    PRINT           shift and go to state 19
+
+  ! IDENTIFIER      [ reduce using rule 10 (stae -> stae stae stae .) ]
+  ! PRINT           [ reduce using rule 10 (stae -> stae stae stae .) ]
+
+    stae                           shift and go to state 28
+    print_statement                shift and go to state 18
+
+state 29
+
+    (5) case_break -> DEFAULT COLON stae BREAK SEMICOLON .
+
+    CASE            reduce using rule 5 (case_break -> DEFAULT COLON stae BREAK SEMICOLON .)
+    DEFAULT         reduce using rule 5 (case_break -> DEFAULT COLON stae BREAK SEMICOLON .)
+    RBRACE          reduce using rule 5 (case_break -> DEFAULT COLON stae BREAK SEMICOLON .)
+
+
+state 30
+
+    (7) stae -> IDENTIFIER EQUAL IDENTIFIER . PLUS PLUS SEMICOLON
+
+    PLUS            shift and go to state 36
+
+
+state 31
+
+    (6) stae -> IDENTIFIER EQUAL NUMERIC . SEMICOLON
+
+    SEMICOLON       shift and go to state 37
+
+
+state 32
+
+    (8) stae -> IDENTIFIER PLUS PLUS . SEMICOLON
+
+    SEMICOLON       shift and go to state 38
+
+
+state 33
+
+    (9) stae -> IDENTIFIER MINUS MINUS . SEMICOLON
+
+    SEMICOLON       shift and go to state 39
+
+
+state 34
+
+    (12) print_statement -> PRINT LPARA QUOTE . STRING QUOTE RPARA SEMICOLON
+    (13) print_statement -> PRINT LPARA QUOTE . IDENTIFIER QUOTE RPARA SEMICOLON
+
+    STRING          shift and go to state 40
+    IDENTIFIER      shift and go to state 41
+
+
+state 35
+
+    (4) case_break -> CASE NUMERIC COLON stae BREAK SEMICOLON .
+
+    CASE            reduce using rule 4 (case_break -> CASE NUMERIC COLON stae BREAK SEMICOLON .)
+    DEFAULT         reduce using rule 4 (case_break -> CASE NUMERIC COLON stae BREAK SEMICOLON .)
+    RBRACE          reduce using rule 4 (case_break -> CASE NUMERIC COLON stae BREAK SEMICOLON .)
+
+
+state 36
+
+    (7) stae -> IDENTIFIER EQUAL IDENTIFIER PLUS . PLUS SEMICOLON
+
+    PLUS            shift and go to state 42
+
+
+state 37
+
+    (6) stae -> IDENTIFIER EQUAL NUMERIC SEMICOLON .
+
+    BREAK           reduce using rule 6 (stae -> IDENTIFIER EQUAL NUMERIC SEMICOLON .)
+    IDENTIFIER      reduce using rule 6 (stae -> IDENTIFIER EQUAL NUMERIC SEMICOLON .)
+    PRINT           reduce using rule 6 (stae -> IDENTIFIER EQUAL NUMERIC SEMICOLON .)
+
+
+state 38
+
+    (8) stae -> IDENTIFIER PLUS PLUS SEMICOLON .
+
+    BREAK           reduce using rule 8 (stae -> IDENTIFIER PLUS PLUS SEMICOLON .)
+    IDENTIFIER      reduce using rule 8 (stae -> IDENTIFIER PLUS PLUS SEMICOLON .)
+    PRINT           reduce using rule 8 (stae -> IDENTIFIER PLUS PLUS SEMICOLON .)
+
+
+state 39
+
+    (9) stae -> IDENTIFIER MINUS MINUS SEMICOLON .
+
+    BREAK           reduce using rule 9 (stae -> IDENTIFIER MINUS MINUS SEMICOLON .)
+    IDENTIFIER      reduce using rule 9 (stae -> IDENTIFIER MINUS MINUS SEMICOLON .)
+    PRINT           reduce using rule 9 (stae -> IDENTIFIER MINUS MINUS SEMICOLON .)
+
+
+state 40
+
+    (12) print_statement -> PRINT LPARA QUOTE STRING . QUOTE RPARA SEMICOLON
+
+    QUOTE           shift and go to state 43
+
+
+state 41
+
+    (13) print_statement -> PRINT LPARA QUOTE IDENTIFIER . QUOTE RPARA SEMICOLON
+
+    QUOTE           shift and go to state 44
+
+
+state 42
+
+    (7) stae -> IDENTIFIER EQUAL IDENTIFIER PLUS PLUS . SEMICOLON
+
+    SEMICOLON       shift and go to state 45
+
+
+state 43
+
+    (12) print_statement -> PRINT LPARA QUOTE STRING QUOTE . RPARA SEMICOLON
+
+    RPARA           shift and go to state 46
+
+
+state 44
+
+    (13) print_statement -> PRINT LPARA QUOTE IDENTIFIER QUOTE . RPARA SEMICOLON
+
+    RPARA           shift and go to state 47
+
+
+state 45
+
+    (7) stae -> IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON .
+
+    BREAK           reduce using rule 7 (stae -> IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON .)
+    IDENTIFIER      reduce using rule 7 (stae -> IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON .)
+    PRINT           reduce using rule 7 (stae -> IDENTIFIER EQUAL IDENTIFIER PLUS PLUS SEMICOLON .)
+
+
+state 46
+
+    (12) print_statement -> PRINT LPARA QUOTE STRING QUOTE RPARA . SEMICOLON
+
+    SEMICOLON       shift and go to state 48
+
+
+state 47
+
+    (13) print_statement -> PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA . SEMICOLON
+
+    SEMICOLON       shift and go to state 49
+
+
+state 48
+
+    (12) print_statement -> PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON .
+
+    BREAK           reduce using rule 12 (print_statement -> PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON .)
+    IDENTIFIER      reduce using rule 12 (print_statement -> PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON .)
+    PRINT           reduce using rule 12 (print_statement -> PRINT LPARA QUOTE STRING QUOTE RPARA SEMICOLON .)
+
+
+state 49
+
+    (13) print_statement -> PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON .
+
+    BREAK           reduce using rule 13 (print_statement -> PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON .)
+    IDENTIFIER      reduce using rule 13 (print_statement -> PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON .)
+    PRINT           reduce using rule 13 (print_statement -> PRINT LPARA QUOTE IDENTIFIER QUOTE RPARA SEMICOLON .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for IDENTIFIER in state 28 resolved as shift
+WARNING: shift/reduce conflict for PRINT in state 28 resolved as shift
